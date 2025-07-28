@@ -1,0 +1,21 @@
+version: "3.3"
+
+services:
+  app:
+    container_name: mainweb_frontend
+    build:
+      context: .
+      dockerfile: dockerfile
+      args:
+        - NODE_ENV=production
+        - VITE_API_BASE_URL=${VITE_API_BASE_URL}
+    env_file:
+      - .env
+    ports:
+      - "4060:4060"
+    networks:
+      - nginx-proxy-net
+
+networks:
+  nginx-proxy-net:
+    external: true
