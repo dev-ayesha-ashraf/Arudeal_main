@@ -2,10 +2,11 @@ import { useQuery } from "@tanstack/react-query";
 
 const fetchCars = async () => {
   const api_url = import.meta.env.VITE_API_CARS_LIST;
-  const response = await fetch(`${api_url}/cars/list-cars`);
-  console.log(response);
+  const response = await fetch(`${api_url}/types/list-types`);
+  // console.log(response.json());
 
   if (!response.ok) {
+    console.log(response.status);
     throw new Error("Failed to fetch cars");
   }
 

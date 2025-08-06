@@ -17,6 +17,7 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignupPage />} />
             {/* Add more routes as needed */}
+            <Route path="/bikes/listings" element={<BikeListing />} />
             <Route path="/search" element={<div className="min-h-screen flex items-center justify-center"><h1 className="text-2xl">Search Page - Coming Soon</h1></div>} />
             <Route path="/wishlist" element={<div className="min-h-screen flex items-center justify-center"><h1 className="text-2xl">Wishlist Page - Coming Soon</h1></div>} />
             <Route path="/cart" element={<div className="min-h-screen flex items-center justify-center"><h1 className="text-2xl">Cart Page - Coming Soon</h1></div>} />
@@ -29,7 +30,6 @@ function App() {
               <AboutUs />
             } />
 
-            <Route path="/bikes/listings" element={<BikeListing />} />
 
           </Routes>
         </main>

@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 const fetchTypes = async () => {
   const api_url = import.meta.env.VITE_API_CARS_LIST;
   const response = await fetch(`${api_url}/types/list-types`);
+  console.log(response.json());
   if (!response.ok) {
     console.log(response);
     throw new Error("Failed to fetch types");

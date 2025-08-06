@@ -33,7 +33,7 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
             window.open(currentSlideData.link, '_blank', 'noopener,noreferrer');
         }
     };
-    const IMAGE_API_URL = import.meta.env.VITE_API2_URL_IMAGE
+    const api_base_url = import.meta.env.VITE_API_URL_IMAGE
 
     const handleButtonClick = (e: React.MouseEvent) => {
         e.stopPropagation();
@@ -100,7 +100,7 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
                                 {slide.image && (
                                     <div className="flex-1 relative order-1 sm:order-2 min-h-[120px] sm:min-h-0">
                                         <img
-                                            src={`${IMAGE_API_URL}${slide.image}`}
+                                            src={`${api_base_url}${slide.image}`}
                                             alt={slide.title || 'Slide image'}
                                             className="absolute rounded-lg right-2 sm:right-0 top-1/2 transform -translate-y-1/2 h-24 sm:h-32 md:h-40 lg:h-52 w-auto object-cover"
                                             loading="lazy"

@@ -32,6 +32,7 @@ const LargeProductCard: React.FC<ProductCardProps> = ({
 }) => {
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
+  const IMAGE_API_URL = import.meta.env.VITE_API_URL_IMAGE
 
   const handleWishlistClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -92,12 +93,12 @@ const LargeProductCard: React.FC<ProductCardProps> = ({
           )}
           {image && (
             <img
-              src={image}
+              src={`${IMAGE_API_URL}${image}`}
               alt={name || 'Product image'}
               className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-300 ${imageLoaded ? "opacity-100" : "opacity-0"
                 }`}
               onLoad={() => setImageLoaded(true)}
-              onError={() => setImageLoaded(true)}
+            // onError={() => setImageLoaded(true)}
             />
           )}
         </div>

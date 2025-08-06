@@ -35,9 +35,7 @@ export const PromoCard: React.FC<PromoCardProps> = ({
         }
     }
 
-    const IMAGE_API_URL = import.meta.env.VITE_API2_URL_IMAGE
-
-    console.log(link, 'link');
+    const IMAGE_API_URL = import.meta.env.VITE_API_URL_IMAGE
 
     if (loading) {
         return (
@@ -118,9 +116,7 @@ export const PromoCard: React.FC<PromoCardProps> = ({
                             alt={title}
                             className="h-20 sm:h-28 w-auto max-w-full object-contain rounded-lg shadow-sm"
                             loading="lazy"
-                            onError={(e) => {
-                                e.currentTarget.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgdmlld0JveD0iMCAwIDEwMCAxMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjEwMCIgaGVpZ2h0PSIxMDAiIGZpbGw9IiNGM0Y0RjYiLz48L3N2Zz4=';
-                            }}
+
                         />
                     )}
                 </div>

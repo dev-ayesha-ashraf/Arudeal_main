@@ -73,6 +73,7 @@ const FeaturedBanner: React.FC<FeaturedBannerProps> = ({
   className = "",
 }) => {
   const [imageLoaded, setImageLoaded] = useState<boolean>(false);
+  const IMAGE_API_URL = import.meta.env.VITE_API_URL_IMAGE
 
   const handleClick = (): void => {
     onClick?.(id);
@@ -220,7 +221,7 @@ const FeaturedBanner: React.FC<FeaturedBannerProps> = ({
                 )}
 
                 <img
-                  src={image}
+                  src={`${IMAGE_API_URL}${image}`}
                   alt={imageAlt || title}
                   className={`
                     w-full h-full object-cover rounded-xl shadow-lg
@@ -228,7 +229,7 @@ const FeaturedBanner: React.FC<FeaturedBannerProps> = ({
                     ${imageLoaded ? "opacity-100" : "opacity-0"}
                   `}
                   onLoad={() => setImageLoaded(true)}
-                  onError={() => setImageLoaded(true)}
+                // onError={() => setImageLoaded(true)}
                 />
 
                 {/* Play Button Overlay (for video content) */}

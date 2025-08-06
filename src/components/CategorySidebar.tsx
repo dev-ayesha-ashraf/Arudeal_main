@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronRight, ChevronDown, Car, Home, Waves, Scissors, Bike } from 'lucide-react';
 import { useCars } from '@/hooks/useCarsList';
-import { useTypes } from '@/hooks/useCarTypes';
 
 interface Subcategory {
     id: string;
@@ -36,7 +35,8 @@ export const CategorySidebar: React.FC<CategorySidebarProps> = ({
     const [dynamicCategories, setDynamicCategories] = useState<Category[]>([]);
 
     const { data: carsData, isLoading: carsLoading } = useCars();
-    const { data: typesData, isLoading: typesLoading } = useTypes();
+
+    console.log('Cars Data:', carsData);
 
     const staticCategories: Category[] = [
         {
@@ -98,7 +98,6 @@ export const CategorySidebar: React.FC<CategorySidebarProps> = ({
                 { id: '54', name: 'Gel Nails', count: 5 }
             ]
         },
-        // BIKE Category
         {
             id: 6,
             name: 'Bikes',
@@ -107,28 +106,33 @@ export const CategorySidebar: React.FC<CategorySidebarProps> = ({
             count: 320,
             hasSubmenu: true,
             subcategories: [
-                { id: 61, name: 'Sports Bikes', count: 100, link: "/bikes/listings?sports=true" },
-                { id: 62, name: 'Scooters', count: 85, link: "/bikes/listings?scooters=true" },
-                { id: 63, name: 'Cruisers', count: 70, link: "/bikes/listings?cruisers=true" },
-                { id: 64, name: 'Electric Bikes', count: 65, link: "/bikes/listings?electric=true" }
+                { id: '61', name: 'Sports Bikes', count: 100, link: "/bikes/listings?sports=true" },
+                { id: '62', name: 'Scooters', count: 85, link: "/bikes/listings?scooters=true" },
+                { id: '63', name: 'Cruisers', count: 70, link: "/bikes/listings?cruisers=true" },
+                { id: '64', name: 'Electric Bikes', count: 65, link: "/bikes/listings?electric=true" }
             ]
         }
-
     ];
 
     useEffect(() => {
         let categoriesToShow = [...staticCategories];
 
-        if (typesData?.data && carsData?.data) {
-            const totalCarsCount = carsData.data.length || 0;
+        // Check if carsData has the expected structure
+        if (carsData?.data && Array.isArray(carsData.data)) {
+            // Calculate total cars count
+            const totalCarsCount = carsData.data.reduce((total: number, type: any) => {
+                return total + (type.totalCars || 0);
+            }, 0);
 
             if (totalCarsCount > 0) {
-                const carSubcategories: Subcategory[] = typesData.data
-                    .filter((type: any) => (type.totalCars || 0) > 0)
+                // Create subcategories from car types
+                const carSubcategories: Subcategory[] = carsData.data
+                    .filter((type: any) => (type.totalCars || 0) > 0) // Only include types with cars
                     .map((type: any) => ({
                         id: type._id,
                         name: type.name,
-                        count: type.totalCars || 0
+                        count: type.totalCars || 0,
+                        link: `https://cars.arudeal.com/listings?type=${type.slug}&sort=date-desc`
                     }));
 
                 if (carSubcategories.length > 0) {
@@ -143,18 +147,20 @@ export const CategorySidebar: React.FC<CategorySidebarProps> = ({
                         subcategories: carSubcategories
                     };
 
+                    // Add cars category at the beginning
                     categoriesToShow = [carsCategory, ...staticCategories];
                 }
             }
         }
 
+        // Filter out categories with 0 count (if needed)
         const filteredCategories = categoriesToShow.filter(category => {
             if (category.count === undefined) return true;
             return category.count > 0;
         });
 
         setDynamicCategories(filteredCategories);
-    }, [typesData, carsData]);
+    }, [carsData]); // Only depend on carsData
 
     const toggleCategory = (categoryId: number) => {
         const newExpanded = new Set(expandedCategories);
@@ -176,10 +182,14 @@ export const CategorySidebar: React.FC<CategorySidebarProps> = ({
 
     const handleSubcategoryClick = (categoryId: number, subcategoryId: string) => {
         const category = dynamicCategories.find(cat => cat.id === categoryId);
-        if (category) {
-            if (categoryId === 1) {
-                window.open(`${category.link}&type=${subcategoryId}`, '_blank');
+        const subcategory = category?.subcategories?.find(sub => sub.id === subcategoryId);
+
+        if (category && subcategory) {
+            if (categoryId === 1 && subcategory.link) {
+                // For cars, use the subcategory's specific link
+                window.open(subcategory.link, '_blank');
             } else {
+                // For other categories, use the main category link
                 window.open(category.link, '_blank');
             }
         }
@@ -189,7 +199,7 @@ export const CategorySidebar: React.FC<CategorySidebarProps> = ({
         window.open(category.link, '_blank');
     };
 
-    const isDataLoading = loading || carsLoading || typesLoading;
+    const isDataLoading = loading || carsLoading; // Removed typesLoading
 
     if (isDataLoading) {
         return (

@@ -1,17 +1,22 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { LoadingScreen } from '@/components/LoadingScreen'
 import ProductCard from '@/components/products/card/card';
 import { HeroSlider } from '@/components/HeroSlider';
 import { CategorySidebar } from '@/components/CategorySidebar';
 import { PromoCard } from '@/components/PromoCard';
-
+import { useListingSections } from '@/hooks/useListingSection';
 import { useProducts } from '@/hooks/useProducts';
 import { BannerService } from '@/services/banner.service';
+import { ListingSectionCard } from '../listingsCard/ListingSectionCard';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation, Autoplay } from 'swiper/modules';
+import 'swiper/css';
+import 'swiper/css/navigation';
 
 const MainContent: React.FC = () => {
+    const swiperRef = useRef<any>(null);
     const [initialLoading, setInitialLoading] = useState<boolean>(true);
     const [currentSlide, setCurrentSlide] = useState<number>(0);
-
     // Banner state
     const [heroSlides, setHeroSlides] = useState<any[]>([]);
     const [categories, setCategories] = useState<any[]>([]);
@@ -45,7 +50,6 @@ const MainContent: React.FC = () => {
     const loadBannersAndCategories = async (forceRefresh: boolean = false): Promise<void> => {
         setBannersLoading(true);
         setBannersError(null);
-
         try {
             const [slidesData, categoriesData]: [any[], any[]] = await Promise.all([
                 BannerService.getHeroSlides({
@@ -61,7 +65,6 @@ const MainContent: React.FC = () => {
             ]);
 
             console.log(slidesData)
-
             const processedSlides: any[] = slidesData.map((slide: any) => ({
                 ...slide,
                 bgGradient: slide.bgGradient || getDefaultGradient(slide.bannerType || 'hero')
@@ -85,7 +88,6 @@ const MainContent: React.FC = () => {
             setBannersLoading(false);
         }
     };
-
     // Initial data loading
     useEffect(() => {
         const loadInitialData = async (): Promise<void> => {
@@ -127,7 +129,6 @@ const MainContent: React.FC = () => {
     const refreshBanners = async (): Promise<void> => {
         await loadBannersAndCategories(true);
     };
-
     const isLoading: boolean = initialLoading || (productsLoading && bannersLoading);
     const hasError: boolean = !!(productsError || bannersError);
     const hasData: boolean = heroSlides.length > 0 || categories.length > 0;
@@ -226,6 +227,28 @@ const MainContent: React.FC = () => {
         }
         return null;
     };
+    const [isMobile, setIsMobile] = useState<boolean>(window.innerWidth <= 1000);
+    useEffect(() => {
+        const handleResize = () => {
+            setIsMobile(window.innerWidth <= 1000);
+        };
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+    const {
+        listingSections,
+        loading: listingsLoading,
+        error: listingsError,
+    } = useListingSections();
+
+    // Flatten all listings
+    const allListings = listingSections.flatMap(section => section.listings);
+
+    // Separate layout for large screens
+    const sidebarListing = !isMobile ? allListings[0] : null;
+    const fpListing = !isMobile ? allListings[1] : null;
+    const swiperListings = !isMobile ? allListings.slice(2) : allListings;
 
     if (isLoading) {
         return <LoadingScreen />;
@@ -309,11 +332,26 @@ const MainContent: React.FC = () => {
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
                 <div className="flex gap-6">
-                    {/* Sidebar */}
-                    <CategorySidebar
-                        loading={bannersLoading}
-                    />
+                    <div>
+                        {/* Sidebar */}
+                        <CategorySidebar
+                            loading={bannersLoading}
+                        />
+                        {sidebarListing && (
+                            <div className="mt-4">
+                                <ListingSectionCard
+                                    id={sidebarListing._id}
+                                    title={sidebarListing.title}
+                                    description={sidebarListing.description}
+                                    price={sidebarListing.price}
+                                    image={sidebarListing.image}
+                                    onClick={handleProductClick}
+                                />
+                            </div>
+                        )}
 
+
+                    </div>
                     {/* Main Content */}
                     <div className="flex-1">
                         <div className="grid grid-cols-1 lg:grid-cols-5 gap-3">
@@ -371,7 +409,6 @@ const MainContent: React.FC = () => {
                                         {isRefreshing ? 'Refreshing...' : 'Refresh'}
                                     </button>
                                 </div>
-
                                 {productsLoading && featuredProducts.length === 0 ? (
                                     <div className="grid grid-cols-2 gap-4">
                                         {Array.from({ length: 6 }).map((_, index) => (
@@ -400,6 +437,20 @@ const MainContent: React.FC = () => {
                                                 onBuyNow={() => handleBuyNow(product._id, product.link_url)}
                                             />
                                         ))}
+                                        {fpListing && (
+                                            <div className="mt-6">
+                                                <ListingSectionCard
+                                                    id={fpListing._id}
+                                                    title={fpListing.title}
+                                                    description={fpListing.description}
+                                                    price={fpListing.price}
+                                                    image={fpListing.image}
+                                                    onClick={handleProductClick}
+
+                                                />
+                                            </div>
+                                        )}
+
                                     </div>
                                 ) : (
                                     <div className="bg-white rounded-3xl p-8 shadow-sm">
@@ -427,6 +478,78 @@ const MainContent: React.FC = () => {
                                     </div>
                                 )}
                             </div>
+                            {swiperListings.length > 0 && (
+                                <div className="lg:w-[70vw] w-auto">
+                                    <h3 className="text-lg font-semibold text-gray-900 mb-4">More Listings</h3>
+
+                                    <div className="relative">
+                                        <button
+                                            onClick={() => swiperRef.current?.slidePrev()}
+                                            className="absolute ml-[-5%] top-1/2 z-10 transform -translate-y-1/2 bg-white rounded-full p-2 shadow hover:bg-gray-100"
+                                        >
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                                            </svg>
+                                        </button>
+                                        <Swiper
+                                            modules={[Navigation, Autoplay]}
+                                            onSwiper={(swiper) => (swiperRef.current = swiper)}
+                                            spaceBetween={20}
+                                            breakpoints={{
+                                                0: {
+                                                    slidesPerView: 1,
+                                                },
+                                                400: {
+                                                    slidesPerView: 1.5,
+                                                },
+                                                640: {
+                                                    slidesPerView: 2,
+                                                },
+                                                768: {
+                                                    slidesPerView: 2.5,
+                                                },
+                                                1024: {
+                                                    slidesPerView: 3,
+                                                },
+                                                1280: {
+                                                    slidesPerView: 3.5,
+                                                },
+                                            }}
+
+                                            autoplay={{ delay: 3000, disableOnInteraction: false }}
+                                            loop={true}
+                                            className="h-[400px] custom-swiper"
+                                        >
+                                            {swiperListings.map((listing) => (
+                                                <SwiperSlide key={listing._id}>
+                                                    <div className="h-full">
+                                                        <ListingSectionCard
+                                                            id={listing._id}
+                                                            title={listing.title}
+                                                            description={listing.description}
+                                                            price={listing.price}
+                                                            image={listing.image}
+                                                            onClick={handleProductClick}
+                                                        />
+                                                    </div>
+                                                </SwiperSlide>
+                                            ))}
+                                        </Swiper>
+                                        <button
+                                            onClick={() => swiperRef.current?.slideNext()}
+                                            className="absolute right-0 mr-[-1%] top-1/2 z-10 transform -translate-y-1/2 bg-white rounded-full p-2 shadow hover:bg-gray-100"
+                                        >
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                            </svg>
+                                        </button>
+                                    </div>
+
+
+                                </div>
+                            )}
+
+
                         </div>
                     </div>
                 </div>
