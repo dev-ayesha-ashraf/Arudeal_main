@@ -479,13 +479,13 @@ const MainContent: React.FC = () => {
                                 )}
                             </div>
                             {swiperListings.length > 0 && (
-                                <div className="lg:w-[70vw] w-auto">
+                                <div className="lg:w-[70vw] w-full max-w-[1200px] mx-auto px-4">
                                     <h3 className="text-lg font-semibold text-gray-900 mb-4">More Listings</h3>
 
                                     <div className="relative">
                                         <button
                                             onClick={() => swiperRef.current?.slidePrev()}
-                                            className="absolute ml-[-5%] top-1/2 z-10 transform -translate-y-1/2 bg-white rounded-full p-2 shadow hover:bg-gray-100"
+                                            className="absolute left-0 -translate-x-1/2 top-1/2 z-10 transform -translate-y-1/2 bg-white rounded-full p-2 shadow hover:bg-gray-100"
                                         >
                                             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -494,25 +494,27 @@ const MainContent: React.FC = () => {
                                         <Swiper
                                             modules={[Navigation, Autoplay]}
                                             onSwiper={(swiper) => (swiperRef.current = swiper)}
-                                            spaceBetween={20}
+                                            spaceBetween={15}
+                                            centeredSlides={true}
+                                            centeredSlidesBounds={true}
                                             breakpoints={{
                                                 0: {
                                                     slidesPerView: 1,
                                                 },
                                                 400: {
-                                                    slidesPerView: 1.5,
+                                                    slidesPerView: 1,
                                                 },
                                                 640: {
                                                     slidesPerView: 2,
                                                 },
                                                 768: {
-                                                    slidesPerView: 2.5,
+                                                    slidesPerView: 2,
                                                 },
                                                 1024: {
                                                     slidesPerView: 3,
                                                 },
                                                 1280: {
-                                                    slidesPerView: 3.5,
+                                                    slidesPerView: 3,
                                                 },
                                             }}
 
@@ -522,7 +524,7 @@ const MainContent: React.FC = () => {
                                         >
                                             {swiperListings.map((listing) => (
                                                 <SwiperSlide key={listing._id}>
-                                                    <div className="h-full">
+                                                    <div className="h-full flex justify-center">
                                                         <ListingSectionCard
                                                             id={listing._id}
                                                             title={listing.title}
@@ -537,7 +539,7 @@ const MainContent: React.FC = () => {
                                         </Swiper>
                                         <button
                                             onClick={() => swiperRef.current?.slideNext()}
-                                            className="absolute right-0 mr-[-1%] top-1/2 z-10 transform -translate-y-1/2 bg-white rounded-full p-2 shadow hover:bg-gray-100"
+                                            className="absolute right-0 translate-x-1/2 top-1/2 z-10 transform -translate-y-1/2 bg-white rounded-full p-2 shadow hover:bg-gray-100"
                                         >
                                             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
