@@ -33,7 +33,8 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
             window.open(currentSlideData.link, '_blank', 'noopener,noreferrer');
         }
     };
-    const api_base_url = import.meta.env.VITE_API_URL_IMAGE
+
+    const api_base_url = import.meta.env.VITE_API_URL_IMAGE;
 
     const handleButtonClick = (e: React.MouseEvent) => {
         e.stopPropagation();
@@ -51,8 +52,6 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
             </div>
         );
     }
-
-    console.log(slides);
 
     return (
         <div className="relative rounded-2xl sm:rounded-3xl overflow-hidden w-full h-48 sm:h-64 md:h-72 lg:h-80">
@@ -91,22 +90,23 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
                                     {(slide.buttonText || slide.link) && (
                                         <button
                                             onClick={handleButtonClick}
-                                            className="bg-yellow-400 hover:bg-yellow-500 text-black px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg font-semibold transition-colors w-fit text-xs sm:text-sm"
+                                            className="bg-purple-400 hover:bg-purple-500 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg font-semibold transition-colors w-fit text-xs sm:text-sm"
                                         >
                                             {slide.buttonText || 'Shop Now'}
                                         </button>
                                     )}
                                 </div>
                                 {slide.image && (
-                                    <div className="flex-1 relative order-1 sm:order-2 min-h-[120px] sm:min-h-0">
+                                    <div className="flex-1 flex justify-center items-center order-1 sm:order-2 min-h-[120px] sm:min-h-0">
                                         <img
                                             src={`${api_base_url}${slide.image}`}
                                             alt={slide.title || 'Slide image'}
-                                            className="absolute rounded-lg right-2 sm:right-0 top-1/2 transform -translate-y-1/2 h-24 sm:h-32 md:h-40 lg:h-52 w-auto object-cover"
+                                            className="rounded-lg h-24 sm:h-32 md:h-40 lg:h-52 w-auto object-cover"
                                             loading="lazy"
                                         />
                                     </div>
                                 )}
+
                             </div>
                         </div>
                     </div>
@@ -140,7 +140,7 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
                                 key={index}
                                 onClick={() => onSlideChange(index)}
                                 className={`w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full transition-all duration-200 ${index === currentSlide
-                                    ? 'bg-yellow-400 scale-110'
+                                    ? 'bg-purple-400 scale-110'
                                     : 'bg-white bg-opacity-60 hover:bg-opacity-80'
                                     }`}
                                 aria-label={`Go to slide ${index + 1}`}
@@ -149,6 +149,30 @@ export const HeroSlider: React.FC<HeroSliderProps> = ({
                     </div>
                 </>
             )}
+            <div className="absolute bottom-0 left-0 w-full overflow-hidden pointer-events-none">
+                <svg className="relative block w-full h-32" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" preserveAspectRatio="none">
+                    <path
+                        fill="#A78BFA"
+                        d="M0,192L60,176C120,160,240,128,360,122.7C480,117,600,139,720,160C840,181,960,203,1080,197.3C1200,192,1320,160,1380,144L1440,128L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z"
+                    ></path>
+                </svg>
+                <svg className="absolute bottom-0 left-0 w-full h-28" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" preserveAspectRatio="none">
+                    <path
+                        fill="#C4B5FD"
+                        fillOpacity="0.7"
+                        d="M0,160L60,165.3C120,171,240,181,360,176C480,171,600,149,720,149.3C840,149,960,171,1080,176C1200,181,1320,171,1380,165.3L1440,160L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z"
+                    ></path>
+                </svg>
+                <svg className="absolute bottom-0 left-0 w-full h-24" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" preserveAspectRatio="none">
+                    <path
+                        fill="#EDE9FE"
+                        fillOpacity="0.5"
+                        d="M0,128L60,138.7C120,149,240,171,360,176C480,181,600,171,720,160C840,149,960,139,1080,138.7C1200,139,1320,149,1380,154.7L1440,160L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z"
+                    ></path>
+                </svg>
+            </div>
+
+
         </div>
     );
 };

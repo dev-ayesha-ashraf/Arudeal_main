@@ -461,21 +461,6 @@ const Navbar: React.FC = () => {
                                         ))}
                                     </div>
                                 </div>
-
-                                {/* <div className="p-4 border-t border-gray-200">
-                                    <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wide mb-3">Quick Links</h3>
-                                    <div className="space-y-1">
-                                        {quickLinks.map((link) => (
-                                            <button
-                                                key={link.name}
-                                                onClick={() => handleQuickLinkClick(link.path)}
-                                                className="block w-full text-left p-3 text-gray-800 hover:bg-gray-50 rounded-lg transition-colors duration-200"
-                                            >
-                                                {link.name}
-                                            </button>
-                                        ))}
-                                    </div>
-                                </div> */}
                             </nav>
                         </div>
                     </div>

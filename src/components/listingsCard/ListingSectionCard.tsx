@@ -1,4 +1,5 @@
-import React from 'react';
+import React from "react";
+import { useNavigate } from "react-router-dom";
 
 interface ListingSectionCardProps {
   id: string;
@@ -6,7 +7,7 @@ interface ListingSectionCardProps {
   description: string;
   price: number;
   image: string;
-  onClick: (id: string) => void;
+  onClick?: (productId: string, linkUrl?: string) => void; 
 }
 
 export const ListingSectionCard: React.FC<ListingSectionCardProps> = ({
@@ -15,17 +16,22 @@ export const ListingSectionCard: React.FC<ListingSectionCardProps> = ({
   description,
   price,
   image,
-  onClick,
 }) => {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate(`/listing-detail/${id}`); 
+  };
+
   return (
     <div
       className="bg-white shadow rounded-lg p-4 cursor-pointer hover:shadow-md transition w-[250px] h-[300px] flex flex-col justify-between"
-      onClick={() => onClick(id)}
+      onClick={handleClick}
     >
       <div className="flex flex-col justify-between h-full">
         <div>
           <img
-            src={image}
+            src={image || "/no-image.jpg"}
             alt={title}
             className="w-full h-[160px] object-cover rounded"
           />
